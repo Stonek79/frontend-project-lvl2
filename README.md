@@ -1,1 +1,3 @@
-# frontend-project-lvl2
+# Difference Calculator
+
+## Small programm that compares two configuration files and shows a difference.

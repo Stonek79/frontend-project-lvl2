@@ -1,0 +1,40 @@
+{
+  "name": "difference_calculator",
+  "version": "1.0.0",
+  "description": "Compares two configuration files & shows difference",
+  "bin": {
+    "gendiff": "bin/gendiff.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stonek79/frontend-project-lvl2.git"
+  },
+  "author": "Stonek79",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Stonek79/frontend-project-lvl2/issues"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {}
+  },
+  "homepage": "https://github.com/Stonek79/frontend-project-lvl2#readme",
+  "dependencies": {
+    "commander": "^5.1.0",
+    "lodash": "^4.17.19"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.10.5",
+    "@babel/node": "^7.10.5",
+    "@babel/preset-env": "^7.10.4",
+    "eslint": "^7.2.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "jest": "^26.1.0",
+    "jest-cli": "^26.1.0"
+  }
+}
