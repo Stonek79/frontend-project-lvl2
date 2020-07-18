@@ -1,9 +1,14 @@
 #!/usr/bin/env node
 
-const { program } = require('commander');
+import program from 'commander';
+
+//import { version, description } from '../package.json';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const { version, description } = require('../package.json');
 
 program
-  .version('0.0.1')
-  .description('Compares two configuration files and shows a difference.');
+  .version(version)
+  .description(description);
 
 program.parse(process.argv);

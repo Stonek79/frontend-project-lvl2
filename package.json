@@ -17,6 +17,7 @@
   "bugs": {
     "url": "https://github.com/Stonek79/frontend-project-lvl2/issues"
   },
+  "type": "module",
   "jest": {
     "testEnvironment": "node",
     "transform": {}
