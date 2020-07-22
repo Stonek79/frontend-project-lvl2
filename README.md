@@ -7,3 +7,7 @@
 [![WF](https://github.com/Stonek79/frontend-project-lvl2/workflows/SecondWF/badge.svg)](https://github.com/Stonek79/frontend-project-lvl2/actions)
 
 ### Small programm that compares two configuration files and shows a difference.
+
+
+Asciinema of 3 step:
+<a href="https://asciinema.org/a/SeX0WGoLYBgeEhNqfcrIgLGX2" target="_blank"><img src="https://asciinema.org/a/SeX0WGoLYBgeEhNqfcrIgLGX2.svg" /></a>
