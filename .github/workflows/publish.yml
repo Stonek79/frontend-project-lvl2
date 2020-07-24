@@ -32,6 +32,8 @@ jobs:
           make lint
         
     - name: SECRET_KEY_TEST_ID
+    
+      uses: paambaati/codeclimate-action@v2.6.0
       
       env:
           SECRET_KEY_TEST_ID: ${{ secrets.SECRET_KEY_TEST_ID }}
