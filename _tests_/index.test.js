@@ -8,12 +8,15 @@ import genDiff from '../src/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const getPath = (filename) => path.join(__dirname, '..', '_fixtures_', filename);
+const expectedFile = (fs.readFileSync(getPath('expected.json'), 'utf-8')).trim();
 
-test('genDiff', () => {
-  const getPath = (filename) => path.join(__dirname, '..', '_fixtures_', filename);
-  const expectedFile = (fs.readFileSync(getPath('expected.json'), 'utf-8')).trim();
-  const filepath1 = getPath('file1.json');
-  const filepath2 = getPath('file2.json');
+test('genDiffJson', () => {
+  const json = ['file1.json', 'file2.json'];
+  expect(genDiff(...json)).toEqual(expectedFile);
+});
 
-  expect(genDiff(filepath1, filepath2)).toBe(expectedFile);
+test('genDiffYaml', () => {
+  const yml = ['file1.yml', 'file2.yml'];
+  expect(genDiff(...yml)).toEqual(expectedFile);
 });
