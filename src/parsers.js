@@ -13,7 +13,6 @@ const getData = (filepath) => {
   const filedata = fs.readFileSync(getPath(filepath), 'utf-8');
   const format = path.extname(filepath);
 
-  let parse;
   switch (format) {
     case '.yml':
       return yaml.safeLoad(filedata);

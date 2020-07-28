@@ -1,5 +1,5 @@
-import getData from './parsers.js';
 import _ from 'lodash';
+import getData from './parsers.js';
 
 const getDiff = (data1, data2) => {
   const getEntries = (obj) => Object.entries(obj);
@@ -19,8 +19,6 @@ const getDiff = (data1, data2) => {
   return result;
 };
 
-const genDiff = (filepath1, filepath2) => {
-  return getDiff(getData(filepath1), getData(filepath2));
-};
+const genDiff = (filepath1, filepath2) => getDiff(getData(filepath1), getData(filepath2));
 
 export default genDiff;
