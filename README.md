@@ -14,3 +14,6 @@ Asciinema of 3 step:
 
 Asciinema of 5 step:
 <a href="https://asciinema.org/a/mj1NTqkGRHf9K88iJDre1efbC" target="_blank"><img src="https://asciinema.org/a/mj1NTqkGRHf9K88iJDre1efbC.svg" /></a>
+
+Asciinema of 6 step:
+<a href="https://asciinema.org/a/uptUOUAWgb6xaS5T1SEE2VkHl" target="_blank"><img src="https://asciinema.org/a/uptUOUAWgb6xaS5T1SEE2VkHl.svg" /></a>
