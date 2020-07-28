@@ -27,6 +27,7 @@
     "@jest/globals": "^26.1.0",
     "commander": "^5.1.0",
     "eslint-plugin-jest": "^23.18.2",
+    "js-ini": "^1.2.0",
     "js-yaml": "^3.14.0",
     "lodash": "^4.17.19"
   },

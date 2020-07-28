@@ -3,6 +3,7 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs';
 import yaml from 'js-yaml';
+import ini from 'js-ini';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,12 +16,11 @@ const getData = (filepath) => {
   let parse;
   switch (format) {
     case '.yml':
-      parse = yaml.safeLoad;
-      break;
+      return yaml.safeLoad(filedata);
+    case '.ini':
+      return ini.parse(filedata);
     default:
-      parse = JSON.parse;
+      return JSON.parse(filedata);
   }
-
-  return parse(filedata);
 };
 export default getData;

@@ -11,12 +11,10 @@ const __dirname = path.dirname(__filename);
 const getPath = (filename) => path.join(__dirname, '..', '_fixtures_', filename);
 const expectedFile = (fs.readFileSync(getPath('expected.json'), 'utf-8')).trim();
 
-test('genDiffJson', () => {
-  const json = ['file1.json', 'file2.json'];
-  expect(genDiff(...json)).toEqual(expectedFile);
-});
-
-test('genDiffYaml', () => {
-  const yml = ['file1.yml', 'file2.yml'];
-  expect(genDiff(...yml)).toEqual(expectedFile);
+test.each([
+  ['file1.json', 'file2.json', expectedFile],
+  ['file1.yml', 'file2.yml', expectedFile],
+  ['file1.ini', 'file2.ini', expectedFile],
+])('.add(%s, %s)', (a, b, expected) => {
+  expect(genDiff(a, b)).toBe(expected);
 });
