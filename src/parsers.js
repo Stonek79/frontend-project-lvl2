@@ -13,13 +13,18 @@ const getData = (filepath) => {
   const filedata = fs.readFileSync(getPath(filepath), 'utf-8');
   const format = path.extname(filepath);
 
+  let parse;
   switch (format) {
     case '.yml':
-      return yaml.safeLoad(filedata);
+      parse = yaml.safeLoad;
+      break;
     case '.ini':
-      return ini.parse(filedata);
+      parse = ini.parse;
+      break;
     default:
-      return JSON.parse(filedata);
+      parse = JSON.parse;
   }
+  return parse(filedata);
 };
+
 export default getData;

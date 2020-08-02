@@ -9,12 +9,12 @@ import genDiff from '../src/index.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const getPath = (filename) => path.join(__dirname, '..', '_fixtures_', filename);
-const expectedFile = (fs.readFileSync(getPath('expected.json'), 'utf-8')).trim();
+const expectedFile = (fs.readFileSync(getPath('deepExpected.json'), 'utf-8')).trim();
 
 test.each([
-  ['file1.json', 'file2.json', expectedFile],
-  ['file1.yml', 'file2.yml', expectedFile],
-  ['file1.ini', 'file2.ini', expectedFile],
+  ['deepFile1.json', 'deepFile2.json', expectedFile],
+  ['deepFile1.yml', 'deepFile2.yml', expectedFile],
+  ['deepFile1.ini', 'deepFile2.ini', expectedFile],
 ])('.add(%s, %s)', (a, b, expected) => {
   expect(genDiff(a, b)).toBe(expected);
 });
