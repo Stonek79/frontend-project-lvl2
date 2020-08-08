@@ -8,7 +8,7 @@ import ini from 'ini';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const getData = (filepath) => {
+const parser = (filepath) => {
   const getPath = (filename) => path.resolve(__dirname, '..', '_fixtures_', filename);
   const filedata = fs.readFileSync(getPath(filepath), 'utf-8');
   const format = path.extname(filepath);
@@ -27,4 +27,4 @@ const getData = (filepath) => {
   return parse(filedata);
 };
 
-export default getData;
+export default parser;

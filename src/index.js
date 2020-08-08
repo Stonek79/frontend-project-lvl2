@@ -1,38 +1,31 @@
 /* eslint-disable no-multi-spaces */
 import _ from 'lodash';
-import getData from './parsers.js';
-import stylish from './formatter.js';
+import parser from './parsers.js';
+import getFormatter from './formatters/index.js';
 
-const getDiff = (data1, data2) => {
-  const keys = _.uniq(_.union(_.keys(data1), _.keys(data2))).sort();
-  const tree = (obj) => Object.entries(obj).reduce((acc, [key, value]) => [...acc,  `  ${key}: ${_.isObject(value)
-    ? [`{${tree(value)}}`] : [`${value}`]}`], []);
-  const diff = keys.reduce((acc, item) => {
-    const zero = [`  ${item}: ${data1[item]}`].join(' ');
-    const plus = [`+ ${item}: ${data2[item]}`].join(' ');
-    const minus = [`- ${item}: ${data1[item]}`].join(' ');
-    if (_.isObject(data1[item]) && _.isObject(data2[item])) {
-      return [...acc, `  ${item}: {${getDiff(data1[item], data2[item])}}`];
-    }
+const getDifferences = (fileData1, fileData2) => {
+  const keys = _.uniq(_.union(_.keys(fileData1), _.keys(fileData2))).sort();
+  return keys.flatMap((key) => {
+    const added = _.has(fileData2, key) && !_.has(fileData1, key);
+    const delited = !_.has(fileData2, key) && _.has(fileData1, key);
+    const saved = (fileData2[key] === fileData1[key]);
 
-    if (_.has(data1, item) && _.has(data2, item)) {
-      if (_.isObject(data1[item]) || _.isObject(data2[item])) {
-        return _.isObject(data1[item]) ? [...acc, `- ${item}: {${tree(data1[item])}}`, plus]
-          : [...acc, `+ ${item}: {${tree(data2[item])}}`, minus];
-      }
-      return [...acc, (data1[item] === data2[item] ? zero : [minus, plus])];
+    if (_.isObject(fileData1[key]) && _.isObject(fileData2[key])) {
+      return [{ save: [key, getDifferences(fileData1[key], fileData2[key])] }];
     }
-
-    if (_.isObject(data1[item]) || _.isObject(data2[item])) {
-      return _.isObject(data1[item]) ? [...acc, `- ${item}: {${tree(data1[item])}}`]
-        : [...acc, `+ ${item}: {${tree(data2[item])}}`];
+    if (added) return { add: [key, fileData2[key]] };
+    if (delited) return { del: [key, fileData1[key]] };
+    if (saved) {
+      return { save: [key, fileData2[key]] };
     }
-    return [...acc, (_.has(data1, item) ? minus : plus)];
-  }, []);
-  const result = [diff.flat()].join('\n').split(',');
-  return result;
+    return { update: [key, [fileData2[key], fileData1[key]]] };
+  });
 };
 
-const genDiff = (filepath1, filepath2) => stylish(getDiff(getData(filepath1), getData(filepath2)));
+const genarateDifferences = (filepath1, filepath2, format = 'stylish') => {
+  const diff = getDifferences(parser(filepath1), parser(filepath2));
+  const formatter = getFormatter(format);
+  return formatter(diff);
+};
 
-export default genDiff;
+export default genarateDifferences;
