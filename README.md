@@ -23,3 +23,6 @@ Asciinema of 7 step:
 
 Asciinema of 8 step:
 <a href="https://asciinema.org/a/tOui9ncIIejpOywCOoY40jQob" target="_blank"><img src="https://asciinema.org/a/tOui9ncIIejpOywCOoY40jQob.svg" /></a>
+
+Asciinema of 9 step:
+<a href="https://asciinema.org/a/DrkMNoBpDqT69M24ai3XmJzqA" target="_blank"><img src="https://asciinema.org/a/DrkMNoBpDqT69M24ai3XmJzqA.svg" /></a>
