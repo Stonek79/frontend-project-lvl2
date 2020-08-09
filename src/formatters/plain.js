@@ -12,9 +12,6 @@ const plainFormatter = (diffs) => {
       }
       return value;
     };
-    const tree = (obj) => Object.values(obj).map((objValue) => `${_.isObject(objValue) ? `${tree(objValue)}` : objValue}`);
-    const getValue = (item) => (_.isObject(item) ? `${tree(item)}` : item);
-    const returnedValue = (value) => (_.isArray(value) ? `${constructFormat(value, keys)}` : getValue(value));
 
     switch (formatedKey) {
       case ('updated'):
@@ -23,11 +20,12 @@ const plainFormatter = (diffs) => {
         return [`Property '${keys.join('.')}' was added with value: ${getTypeOfValue(innerValue)}`];
       case ('delited'):
         return [`Property '${keys.join('.')}' was removed`];
-      default:
-        if (_.isObject(innerValue)) {
-          return returnedValue(innerValue);
-        }
+      case ('children'):
+        return constructFormat(innerValue, keys);
+      case ('saved'):
         return null;
+      default:
+        throw new Error(`Unknown format: ${formatedKey}!`);
     }
   }).join('\n');
 

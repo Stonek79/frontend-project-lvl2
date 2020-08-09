@@ -13,15 +13,17 @@ const parser = (filepath) => {
   const getPath = (filename) => path.resolve(__dirname, '..', '_fixtures_', filename);
   const filedata = fs.readFileSync(getPath(filepath), 'utf-8');
   const format = path.extname(filepath);
-  const stringToNumber = (str) => (Number.isInteger(parseInt(str, 10)) ? parseInt(str, 10) : str);
+
   const iniparser = (data) => {
     const iniobject = ini.parse(data);
+    const stringToNumber = (str) => (Number.isInteger(parseInt(str, 10)) ? parseInt(str, 10) : str);
     const parse = (obj) => Object.entries(obj).reduce((acc, [key, value]) => {
       const newObj = { [key]: (_.isObject(value) ? parse(value) : stringToNumber(value)) };
       return { ...acc, ...newObj };
     }, {});
     return parse(iniobject);
   };
+
   let parse;
   switch (format) {
     case '.yml':

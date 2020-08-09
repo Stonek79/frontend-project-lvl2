@@ -6,40 +6,34 @@ const stylishFormatter = (diffs) => {
     const [innerKey, innerValue] = dif[difKey];
     const tree = (obj) => Object.entries(obj).map(([key, value]) => `${'    '}${key}: ${_.isObject(value) ? [`{\n${tree(value)}\n  }`] : value}`);
     const getValue = (item) => (_.isObject(item) ? [`{\n${tree(item)}\n  }`] : item);
-    const addedValue = (value) => (_.isArray(value) ? [`{\n${constructFormat(value)}\n  }`] : getValue(value));
+
     switch (difKey) {
       case ('added'):
-        return [`${'  + '}${innerKey}: ${addedValue(innerValue)}`];
+        return [`${'  + '}${innerKey}: ${getValue(innerValue)}`];
       case ('updated'):
-        return [`${'  + '}${innerKey}: ${addedValue(innerValue[0].added)}`, `${'  - '}${innerKey}: ${addedValue(innerValue[1].delited)}`];
+        return [`${'  + '}${innerKey}: ${getValue(innerValue[0].added)}`, `${'  - '}${innerKey}: ${getValue(innerValue[1].delited)}`];
       case ('delited'):
-        return [`${'  - '}${innerKey}: ${addedValue(innerValue)}`];
+        return [`${'  - '}${innerKey}: ${getValue(innerValue)}`];
       case ('saved'):
-        return [`${'    '}${innerKey}: ${addedValue(innerValue)}`];
+        return [`${'    '}${innerKey}: ${getValue(innerValue)}`];
+      case ('children'):
+        return [`${'    '}${innerKey}: {\n${constructFormat(innerValue)}\n  }`];
       default:
         return `${innerKey}: ${innerValue}`;
     }
-  }).join('\n')
-    .split('\n').join(',')
-    .split(',');
-  const step = '  ';
-  let count = 0;
-  const getCount = (data) => {
-    if (data.includes('{')) {
-      count += 1;
-      return count;
-    }
-    if (data.includes('}')) {
-      count -= 1;
-      return count;
-    }
-    return count;
-  };
-  const result = constructFormat(diffs).reduce((acc, item) => {
-    acc.push(`${step.repeat(count)}${item}`);
-    getCount(item);
-    return acc;
-  }, []).join('\n');
+  });
+  const constructDiff = constructFormat(diffs);
+  const result = constructDiff.map((element) => element.split(',').join('\n').split('\n'))
+    .flatMap((item) => {
+      let count = 0;
+      const step = '  ';
+      return item.reduce((acc, row) => {
+        acc.push(`${step.repeat(count)}${row}`);
+        if (row.includes('{')) count += 1;
+        if (row.includes('}')) count -= 1;
+        return acc;
+      }, []);
+    }).join('\n');
   return ['{', result, '}'].join('\n');
 };
 
