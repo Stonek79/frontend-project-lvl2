@@ -26,3 +26,11 @@ test.each([
 ])('.add(%s, %s)', (a, b, expected) => {
   expect(genarateDifferences(a, b)).toBe(expected);
 });
+
+test.each([
+  ['deepFile1.json', 'deepFile2.json', expectedFile('jsonsFixtur.json')],
+  ['deepFile1.yml', 'deepFile2.yml', expectedFile('jsonsFixtur.json')],
+  ['deepFile1.ini', 'deepFile2.ini', expectedFile('jsonsFixtur.json')],
+])('.add(%s, %s)', (a, b, expected) => {
+  expect(genarateDifferences(a, b, 'json')).toBe(expected);
+});

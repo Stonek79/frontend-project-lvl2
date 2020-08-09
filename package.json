@@ -1,6 +1,6 @@
 {
   "name": "difference_calculator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Compares two configuration files and shows a difference",
   "bin": {
     "gendiff": "bin/gendiff.js"

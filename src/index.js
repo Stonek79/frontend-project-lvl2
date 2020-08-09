@@ -4,21 +4,22 @@ import parser from './parsers.js';
 import getFormatter from './formatters/index.js';
 
 const getDifferences = (fileData1, fileData2) => {
+  // console.log(fileData1, typeof(fileData1));
   const keys = _.uniq(_.union(_.keys(fileData1), _.keys(fileData2))).sort();
   return keys.flatMap((key) => {
-    const added = _.has(fileData2, key) && !_.has(fileData1, key);
-    const delited = !_.has(fileData2, key) && _.has(fileData1, key);
-    const saved = (fileData2[key] === fileData1[key]);
+    const add = _.has(fileData2, key) && !_.has(fileData1, key);
+    const delite = !_.has(fileData2, key) && _.has(fileData1, key);
+    const save = (fileData2[key] === fileData1[key]);
 
     if (_.isObject(fileData1[key]) && _.isObject(fileData2[key])) {
-      return [{ save: [key, getDifferences(fileData1[key], fileData2[key])] }];
+      return [{ saved: [key, getDifferences(fileData1[key], fileData2[key])] }];
     }
-    if (added) return { add: [key, fileData2[key]] };
-    if (delited) return { del: [key, fileData1[key]] };
-    if (saved) {
-      return { save: [key, fileData2[key]] };
+    if (add) return { added: [key, fileData2[key]] };
+    if (delite) return { delited: [key, fileData1[key]] };
+    if (save) {
+      return { saved: [key, fileData2[key]] };
     }
-    return { update: [key, [fileData2[key], fileData1[key]]] };
+    return { updated: [key, [{ added: fileData2[key] }, { delited: fileData1[key] }]] };
   });
 };
 

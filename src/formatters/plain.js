@@ -15,15 +15,13 @@ const plainFormatter = (diffs) => {
     const tree = (obj) => Object.values(obj).map((objValue) => `${_.isObject(objValue) ? `${tree(objValue)}` : objValue}`);
     const getValue = (item) => (_.isObject(item) ? `${tree(item)}` : item);
     const returnedValue = (value) => (_.isArray(value) ? `${constructFormat(value, keys)}` : getValue(value));
-    const delited = getTypeOfValue(innerValue[1]);
-    const added = getTypeOfValue(innerValue[0]);
 
     switch (formatedKey) {
-      case ('update'):
-        return [`Property '${keys.join('.')}' was updated. From ${delited} to ${added}`];
-      case ('add'):
+      case ('updated'):
+        return [`Property '${keys.join('.')}' was updated. From ${getTypeOfValue(innerValue[1].delited)} to ${getTypeOfValue(innerValue[0].added)}`];
+      case ('added'):
         return [`Property '${keys.join('.')}' was added with value: ${getTypeOfValue(innerValue)}`];
-      case ('del'):
+      case ('delited'):
         return [`Property '${keys.join('.')}' was removed`];
       default:
         if (_.isObject(innerValue)) {

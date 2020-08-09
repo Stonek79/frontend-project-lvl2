@@ -8,13 +8,13 @@ const stylishFormatter = (diffs) => {
     const getValue = (item) => (_.isObject(item) ? [`{\n${tree(item)}\n  }`] : item);
     const addedValue = (value) => (_.isArray(value) ? [`{\n${constructFormat(value)}\n  }`] : getValue(value));
     switch (difKey) {
-      case ('add'):
+      case ('added'):
         return [`${'  + '}${innerKey}: ${addedValue(innerValue)}`];
-      case ('update'):
-        return [`${'  + '}${innerKey}: ${addedValue(innerValue[0])}`, `${'  - '}${innerKey}: ${addedValue(innerValue[1])}`];
-      case ('del'):
+      case ('updated'):
+        return [`${'  + '}${innerKey}: ${addedValue(innerValue[0].added)}`, `${'  - '}${innerKey}: ${addedValue(innerValue[1].delited)}`];
+      case ('delited'):
         return [`${'  - '}${innerKey}: ${addedValue(innerValue)}`];
-      case ('save'):
+      case ('saved'):
         return [`${'    '}${innerKey}: ${addedValue(innerValue)}`];
       default:
         return `${innerKey}: ${innerValue}`;
