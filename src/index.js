@@ -1,4 +1,6 @@
 /* eslint-disable no-multi-spaces */
+/* eslint-disable no-underscore-dangle */
+
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs';
@@ -16,8 +18,8 @@ const getData = (filepath) => {
 };
 
 const genarateDifferences = (filepath1, filepath2, format = 'stylish') => {
-  const data1 = getData(filepath1)
-  const data2 = getData(filepath2)
+  const data1 = getData(filepath1);
+  const data2 = getData(filepath2);
   const parsedData1 = parser(data1);
   const parsedData2 = parser(data2);
   const diff = getDifferences(parsedData1, parsedData2);
