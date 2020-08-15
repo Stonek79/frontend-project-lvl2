@@ -1,31 +1,26 @@
 /* eslint-disable no-multi-spaces */
-import _ from 'lodash';
+import { fileURLToPath } from 'url';
+import path from 'path';
+import fs from 'fs';
 import parser from './parsers.js';
 import getFormatter from './formatters/index.js';
+import getDifferences from './getdifferenses.js';
 
-const getDifferences = (fileData1, fileData2) => {
-  const keys = _.uniq(_.union(_.keys(fileData1), _.keys(fileData2))).sort();
-  const result = keys.flatMap((key) => {
-    const add = _.has(fileData2, key) && !_.has(fileData1, key);
-    const delite = !_.has(fileData2, key) && _.has(fileData1, key);
-    const save = (fileData2[key] === fileData1[key]);
-
-    if (_.isObject(fileData1[key]) && _.isObject(fileData2[key])) {
-      return [{ children: [key, getDifferences(fileData1[key], fileData2[key])] }];
-    }
-    if (add) return { added: [key, fileData2[key]] };
-    if (delite) return { delited: [key, fileData1[key]] };
-    if (save) {
-      return { saved: [key, fileData2[key]] };
-    }
-    return { updated: [key, [{ added: fileData2[key] }, { delited: fileData1[key] }]] };
-  });
-  // console.log(result);
-  return result;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const getData = (filepath) => {
+  const getPath = (filename) => path.resolve(__dirname, '..', '__fixtures__', filename);
+  const filedata = fs.readFileSync(getPath(filepath), 'utf-8');
+  const extention = path.extname(filepath);
+  return [filedata, extention];
 };
 
 const genarateDifferences = (filepath1, filepath2, format = 'stylish') => {
-  const diff = getDifferences(parser(filepath1), parser(filepath2));
+  const data1 = getData(filepath1)
+  const data2 = getData(filepath2)
+  const parsedData1 = parser(data1);
+  const parsedData2 = parser(data2);
+  const diff = getDifferences(parsedData1, parsedData2);
   const formatter = getFormatter(format);
   return formatter(diff);
 };
