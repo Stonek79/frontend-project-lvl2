@@ -1,3 +1,3 @@
-const jsonsFormatter = (data) => JSON.stringify(data, null, ' ');
+const makeJson = (data) => JSON.stringify(data, null, ' ');
 
-export default jsonsFormatter;
+export default makeJson;

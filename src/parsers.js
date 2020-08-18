@@ -3,6 +3,8 @@ import _ from 'lodash';
 import yaml from 'js-yaml';
 import ini from 'ini';
 
+const jsonparser = JSON.parse;
+const ymlparser = yaml.safeLoad;
 const iniparser = (data) => {
   const iniobject = ini.parse(data);
   const stringToNumber = (str) => (Number.isInteger(parseInt(str, 10)) ? parseInt(str, 10) : str);
@@ -13,19 +15,10 @@ const iniparser = (data) => {
   return parse(iniobject);
 };
 
-const parser = ([filedata, format]) => {
-  let parse;
-  switch (format) {
-    case '.yml':
-      parse = yaml.safeLoad;
-      break;
-    case '.ini':
-      parse = iniparser;
-      break;
-    default:
-      parse = JSON.parse;
-  }
-  return parse(filedata);
+const parsers = {
+  '.yml': ymlparser,
+  '.ini': iniparser,
+  '.json': jsonparser,
 };
 
-export default parser;
+export default (extention) => parsers[extention];

@@ -12,7 +12,7 @@ const getPath = (filename) => path.join(__dirname, '..', '__fixtures__', filenam
 const expectedResult = (fileName) => (fs.readFileSync(getPath(fileName), 'utf-8')).trim();
 
 describe.each(['json', 'stylish', 'plain'])('Test format -(%s)', (format) => {
-  const expected = expectedResult(`${format}Fixtur.txt`);
+  const expected = expectedResult(`${format}Diff.txt`);
 
   test.each(['.json', '.yml', '.ini'])('Test extention %s', (extention) => {
     const filePath1 = (`deepFile1${extention}`);
@@ -25,7 +25,7 @@ describe.each(['json', 'stylish', 'plain'])('Test format -(%s)', (format) => {
 test.each(['.json', '.yml', '.ini'])('Test default format %s', (extention) => {
   const filePath1 = (`deepFile1${extention}`);
   const filePath2 = (`deepFile2${extention}`);
-  const expected = expectedResult('stylishFixtur.txt');
+  const expected = expectedResult('stylishDiff.txt');
 
   expect(genarateDifferences(filePath1, filePath2)).toBe(expected);
 });

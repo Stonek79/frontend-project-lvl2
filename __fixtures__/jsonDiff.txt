@@ -16,7 +16,7 @@
      ]
     },
     {
-     "delited": [
+     "deleted": [
       "setting2",
       200
      ]
@@ -31,7 +31,7 @@
         }
        },
        {
-        "delited": true
+        "deleted": true
        }
       ]
      ]
@@ -66,7 +66,7 @@
               "added": "so much"
              },
              {
-              "delited": "too much"
+              "deleted": "too much"
              }
             ]
            ]
@@ -104,7 +104,7 @@
         "added": "bars"
        },
        {
-        "delited": "bas"
+        "deleted": "bas"
        }
       ]
      ]
@@ -123,7 +123,7 @@
         "added": "str"
        },
        {
-        "delited": {
+        "deleted": {
          "key": "value"
         }
        }
@@ -134,7 +134,7 @@
   ]
  },
  {
-  "delited": [
+  "deleted": [
    "group2",
    {
     "abc": 12345,
