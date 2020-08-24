@@ -6,13 +6,13 @@ import ini from 'ini';
 const jsonparser = JSON.parse;
 const ymlparser = yaml.safeLoad;
 const iniparser = (data) => {
-  const iniobject = ini.parse(data);
+  const objectFromIniFile = ini.parse(data);
   const stringToNumber = (str) => (Number.isInteger(parseInt(str, 10)) ? parseInt(str, 10) : str);
   const parse = (obj) => Object.entries(obj).reduce((acc, [key, value]) => {
-    const newObj = { [key]: (_.isObject(value) ? parse(value) : stringToNumber(value)) };
-    return { ...acc, ...newObj };
+    const newMakedObj = { [key]: (_.isObject(value) ? parse(value) : stringToNumber(value)) };
+    return { ...acc, ...newMakedObj };
   }, {});
-  return parse(iniobject);
+  return parse(objectFromIniFile);
 };
 
 const parsers = {
@@ -21,4 +21,4 @@ const parsers = {
   '.json': jsonparser,
 };
 
-export default (extention) => parsers[extention];
+export default (fileData, extention) => parsers[extention](fileData);
