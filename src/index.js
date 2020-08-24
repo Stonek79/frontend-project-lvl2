@@ -5,7 +5,7 @@ import path from 'path';
 import fs from 'fs';
 import parse from './parsers.js';
 import getFormatter from './formatters/index.js';
-import getDifferences from './getdifferences.js';
+import getDifferences from './getDifferences.js';
 
 const getDataForParse = (filepath) => {
   const extention = path.extname(filepath);
