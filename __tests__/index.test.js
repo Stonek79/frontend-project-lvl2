@@ -15,16 +15,17 @@ describe.each(['json', 'stylish', 'plain'])('Test format -(%s)', (format) => {
   const expected = expectedResult(`${format}Diff.txt`);
 
   test.each(['.json', '.yml', '.ini'])('Test extention %s', (extention) => {
-    const filePath1 = (`./__fixtures__/deepFile1${extention}`);
-    const filePath2 = (`./__fixtures__/deepFile2${extention}`);
+    const filePath1 = `./__fixtures__/deepFile1${extention}`;
+    const filePath2 = `./__fixtures__/deepFile2${extention}`;
     expect(generateDifferences(filePath1, filePath2, format)).toBe(expected);
   });
 });
 
-test.each(['.json', '.yml', '.ini'])('Test default format %s', (extention) => {
-  const filePath1 = (`./__fixtures__/deepFile1${extention}`);
-  const filePath2 = (`./__fixtures__/deepFile2${extention}`);
-  const expected = expectedResult('stylishDiff.txt');
-
-  expect(generateDifferences(filePath1, filePath2)).toBe(expected);
+describe('Test default format', () => {
+  test.each(['.json', '.yml', '.ini'])('Test extention %s', (extention) => {
+    const filePath1 = `./__fixtures__/deepFile1${extention}`;
+    const filePath2 = `./__fixtures__/deepFile2${extention}`;
+    const expected = expectedResult('stylishDiff.txt');
+    expect(generateDifferences(filePath1, filePath2)).toBe(expected);
+  });
 });
