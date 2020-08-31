@@ -1,42 +1,40 @@
 import _ from 'lodash';
 
-const makeStylish = (diffs) => {
-  const getPlainFormat = (data) => data.flatMap((dif) => {
-    const diffType = _.keys(dif).toString();
-    const [innerKey, innerValue] = dif[diffType];
-    const makeDiffTree = (obj) => Object.entries(obj)
-      .map(([key, value]) => `${'    '}${key}: ${_.isObject(value) ? [`{\n${makeDiffTree(value)}\n}`] : value}`);
-    const getValue = (item) => (_.isObject(item) ? [`{\n${makeDiffTree(item)}\n}`] : item);
+const attributes = {
+  deleted: '  - ',
+  added: '  + ',
+  children: '    ',
+  saved: '    ',
+};
+const step = '    ';
+const makeStringFromObject = (obj) => [...JSON.stringify(obj, null, step)]
+  .map((litera) => (litera === '}' ? `${step}${litera}` : litera))
+  .filter((elem) => elem !== '"' && elem !== ',').join('').split('\n')
+  .map((row) => row.slice(step.length))
+  .join('\n');
 
-    switch (diffType) {
-      case ('added'):
-        return [`${'  + '}${innerKey}: ${getValue(innerValue)}`];
-      case ('updated'):
-        return [`${'  + '}${innerKey}: ${getValue(innerValue[0].added)}`, `${'  - '}${innerKey}: ${getValue(innerValue[1].deleted)}`];
-      case ('deleted'):
-        return [`${'  - '}${innerKey}: ${getValue(innerValue)}`];
-      case ('saved'):
-        return [`${'    '}${innerKey}: ${getValue(innerValue)}`];
-      case ('children'):
-        return [`${'    '}${innerKey}: {\n${getPlainFormat(innerValue)}\n}`];
-      default:
-        throw new Error(`Unknown format: ${diffType}!`);
-    }
-  });
-  const plainStylish = getPlainFormat(diffs);
-  const finalStylish = plainStylish.map((element) => element.split(',').join('\n').split('\n'))
-    .flatMap((item) => {
-      let count = 0;
-      const step = '    ';
-      return item.reduce((acc, row) => {
-        acc.push(`${step.repeat(count)}${row}`);
-        if (row.includes('{')) count += 1;
-        if (row.includes('}')) count -= 1;
-        return acc;
-      }, []);
-    }).join('\n');
-  const result = ['{', finalStylish, '}'].join('\n');
-  return result;
+const addAttributesToObject = (data) => (!_.isObject(data) ? data : Object.entries(data)
+  .reduce((acc, [key, value]) => (_.isObject(value) ? { ...acc, [`${step}${key}`]: addAttributesToObject(value) }
+    : { ...acc, [`${step}${key}`]: value }), {}));
+
+const addAttributes = (dif) => dif.reduce((acc, { type, key, value }) => {
+  switch (type) {
+    case 'children':
+      return { ...acc, [`${attributes[type]}${key}`]: addAttributes(value) };
+    case 'updated':
+      return {
+        ...acc,
+        [`${attributes.added}${key}`]: addAttributesToObject(value[0]),
+        [`${attributes.deleted}${key}`]: addAttributesToObject(value[1]),
+      };
+    default:
+      return { ...acc, [`${attributes[type]}${key}`]: addAttributesToObject(value) };
+  }
+}, []);
+
+const makeStylish = (diffs) => {
+  const attributed = addAttributes(diffs);
+  return ['{', makeStringFromObject(attributed)].join('');
 };
 
 export default makeStylish;

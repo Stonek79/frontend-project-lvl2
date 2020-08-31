@@ -13,7 +13,7 @@ const getFullPath = (filename) => path.resolve(process.cwd(), filename);
 program
   .version(version)
   .description(description)
-  .option('-f, --format [type]', 'output format')
+  .option('-f, --format [type]', 'output format', 'stylish')
   .arguments('<filepath1> <filepath2>')
   .action((filepath, filepath2) => {
     console.log(generateDifferences(getFullPath(filepath), getFullPath(filepath2), program.format));

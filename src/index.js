@@ -1,6 +1,3 @@
-/* eslint-disable no-multi-spaces */
-/* eslint-disable no-underscore-dangle */
-
 import path from 'path';
 import fs from 'fs';
 import parse from './parsers.js';
