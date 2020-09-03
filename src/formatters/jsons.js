@@ -1,13 +1,10 @@
-const addAttributes = (dif) => dif.map(({ type, key, value }) => {
-  switch (type) {
-    case 'children':
-      return { [`${key}`]: addAttributes(value) };
-    case 'updated':
-      return { [`${type}`]: [{ [`${key}`]: value[0] }, { [`${key}`]: value[1] }] };
-    default:
-      return { [`${type}`]: { [`${key}`]: value } };
-  }
-});
-const makeJson = (data) => JSON.stringify(addAttributes(data));
+const makeJson = (data) => JSON.stringify(data);
 
 export default makeJson;
+
+// альтернативный вариант форматтера JSON
+// const addAttributes = (dif) => dif.reduce((acc, {
+//   type, key, children, ...values
+// }) => [...acc, { [type]: { [key]: type === 'nested' ? addAttributes(children) : values } }], []);
+
+// const makeJson = (data) => JSON.stringify(addAttributes(data));
