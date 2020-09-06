@@ -1,45 +1,42 @@
 import _ from 'lodash';
 
-const attributes = {
-  deleted: '- ',
-  added: '+ ',
-  nested: '  ',
-  updated: '  ',
-  unchanged: '  ',
-};
 const indent = (x) => '  '.repeat(x);
 
-const transformObject = (obj, count) => Object.entries(obj)
-  .map(([key, value]) => (_.isObject(value)
-    ? `${indent(count + 1)}${key}: {\n${transformObject(value, count + 2)}\n${indent(count + 1)}}`
-    : `${indent(count + 1)}${key}: ${value}`));
+const transformValue = (data, count) => {
+  const transformObject = (obj, indentCount) => Object.entries(obj).map((item) => {
+    const [key, value] = item;
+    const offset = indent(indentCount + 1);
+    const getTransformed = (innerValue) => `${offset}${key}: {\n${transformObject(innerValue, indentCount + 2)}\n${offset}}`;
+    return _.isObject(value) ? getTransformed(value) : `${offset}${item}`;
+  }).join('\n');
 
-const transformValue = (data, count) => (!_.isObject(data)
-  ? data : `{\n${transformObject(data, count + 2)}\n${indent(count + 1)}}`);
+  return _.isObject(data) ? `{\n${transformObject(data, count + 2)}\n${indent(count + 1)}}` : data;
+};
 
-const addAttributes = (dif, count) => dif.map(({
+const makeStylish = (dif, count) => dif.map(({
   type, key, value, children, oldValue, newValue,
 }) => {
   switch (type) {
     case 'nested':
-      return `${indent(count)}${attributes[type]}${key}: {\n${addAttributes(children, count + 2)}\n${indent(count + 1)}}`;
-    case 'updated':
-      return `${indent(count)}${attributes.added}${key}: ${transformValue(newValue, count)}\n${indent(count)}${attributes.deleted}${key}: ${transformValue(oldValue, count)}`;
+      return `${indent(count)}${'  '}${key}: {\n${makeStylish(children, count + 2)}\n${indent(count + 1)}}`;
+    case 'updated': {
+      const updatedNew = `${indent(count)}${'+ '}${key}: ${transformValue(newValue, count)}`;
+      const updatedOld = `${indent(count)}${'- '}${key}: ${transformValue(oldValue, count)}`;
+      return `${updatedNew}\n${updatedOld}`;
+    }
     case 'deleted':
+      return `${indent(count)}${'- '}${key}: ${transformValue(value, count)}`;
     case 'added':
+      return `${indent(count)}${'+ '}${key}: ${transformValue(value, count)}`;
     case 'unchanged':
-      return `${indent(count)}${attributes[type]}${key}: ${transformValue(value, count)}`;
+      return `${indent(count)}${'  '}${key}: ${transformValue(value, count)}`;
     default:
       throw new Error(`Unknown format: ${type}!`);
   }
-});
+}).join('\n');
 
-const makeStylish = (diffs) => {
-  const stylish = addAttributes(diffs, 1);
-  return ['{\n', stylish, '\n}']
-    .join('')
-    .split(',')
+export default (diffs) => {
+  const stylish = makeStylish(diffs, 1).split(',');
+  return [`{\n${stylish}\n}`]
     .join('\n');
 };
-
-export default makeStylish;
