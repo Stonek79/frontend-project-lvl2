@@ -26,15 +26,15 @@ You can use different file formats for comparison (for example, **json** and **i
 
 ## Installation
 
-You must have [**node.js**](https://nodejs.org/en/) installed on your machine.
+You must have [**node.js**](https://nodejs.org/en/) installed on your machine (version 13.0 or higher).
 
 Open your console and enter this commands:
 
-> git clone https://github.com/Stonek79/frontend-project-lvl2.git
+ $ user@name: git clone https://github.com/Stonek79/frontend-project-lvl2.git
 
-Then go to the folder ../frontend-project-lvl1/ on your machine and launch installation:
-> make install 
+Then go to the folder ../frontend-project-lvl2/ on your machine and launch installation:
 
+ $ user@name: make install
 
 
 * * *
