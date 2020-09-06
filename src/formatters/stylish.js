@@ -3,12 +3,12 @@ import _ from 'lodash';
 const indent = (x) => '  '.repeat(x);
 
 const transformValue = (data, count) => {
-  const transformObject = (obj, indentCount) => Object.entries(obj).map((item) => {
-    const [key, value] = item;
-    const offset = indent(indentCount + 1);
-    const getTransformed = (innerValue) => `${offset}${key}: {\n${transformObject(innerValue, indentCount + 2)}\n${offset}}`;
-    return _.isObject(value) ? getTransformed(value) : `${offset}${item}`;
-  }).join('\n');
+  const transformObject = (obj, indentCount) => Object.entries(obj)
+    .map(([key, value]) => {
+      const offset = indent(indentCount + 1);
+      const getTransformed = (innerValue) => `${offset}${key}: {\n${transformObject(innerValue, indentCount + 2)}\n${offset}}`;
+      return _.isObject(value) ? getTransformed(value) : `${offset}${key}: ${value}`;
+    }).join('\n');
 
   return _.isObject(data) ? `{\n${transformObject(data, count + 2)}\n${indent(count + 1)}}` : data;
 };
