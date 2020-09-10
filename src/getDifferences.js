@@ -15,7 +15,7 @@ const getDifferences = (parsedData1, parsedData2) => {
     }
     if (parsedData1[key] !== parsedData2[key]) {
       return {
-        type: 'updated', key, newValue: parsedData2[key], oldValue: parsedData1[key],
+        type: 'updated', key, komposit: { newValue: parsedData2[key], oldValue: parsedData1[key] },
       };
     }
     return { type: 'unchanged', key, value: parsedData2[key] };

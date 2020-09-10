@@ -8,6 +8,4 @@ const formatType = {
   json: makeJson,
 };
 
-const getFormatter = (format) => formatType[format];
-
-export default getFormatter;
+export default (format) => formatType[format];

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import path from 'path';
 import fs from 'fs';
 import parse from './parsers.js';
@@ -6,8 +7,9 @@ import getDifferences from './getDifferences.js';
 
 const getParsedData = (filepath) => {
   const extention = path.extname(filepath);
+  const dataType = _.trim(extention, '.');
   const fileData = fs.readFileSync(filepath, 'utf-8');
-  return parse(fileData, extention);
+  return parse(fileData, dataType);
 };
 
 const generateDifferences = (filepath1, filepath2, format = 'stylish') => {

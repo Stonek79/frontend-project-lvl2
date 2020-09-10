@@ -1,42 +1,49 @@
 import _ from 'lodash';
 
-const indent = (x) => '  '.repeat(x);
+const step = '    ';
+const indent = (x) => step.repeat(x);
+
+const sings = {
+  plus: '  + ',
+  minus: '  - ',
+  tab: '    ',
+};
+
+const transformObject = (obj, count) => Object.entries(obj)
+  .map(([key, value]) => {
+    if (_.isObject(value)) {
+      return `${indent(count)}${key}: {\n${transformObject(value, count + 1)}\n${indent(count)}}`;
+    }
+    return `${indent(count)}${key}: ${value}`;
+  }).join('\n');
 
 const transformValue = (data, count) => {
-  const transformObject = (obj, indentCount) => Object.entries(obj)
-    .map(([key, value]) => {
-      const offset = indent(indentCount + 1);
-      const getTransformed = (innerValue) => `${offset}${key}: {\n${transformObject(innerValue, indentCount + 2)}\n${offset}}`;
-      return _.isObject(value) ? getTransformed(value) : `${offset}${key}: ${value}`;
-    }).join('\n');
-
-  return _.isObject(data) ? `{\n${transformObject(data, count + 2)}\n${indent(count + 1)}}` : data;
-};
-
-const makeStylish = (dif, count) => dif.map(({
-  type, key, value, children, oldValue, newValue,
-}) => {
-  switch (type) {
-    case 'nested':
-      return `${indent(count)}${'  '}${key}: {\n${makeStylish(children, count + 2)}\n${indent(count + 1)}}`;
-    case 'updated': {
-      const updatedNew = `${indent(count)}${'+ '}${key}: ${transformValue(newValue, count)}`;
-      const updatedOld = `${indent(count)}${'- '}${key}: ${transformValue(oldValue, count)}`;
-      return `${updatedNew}\n${updatedOld}`;
-    }
-    case 'deleted':
-      return `${indent(count)}${'- '}${key}: ${transformValue(value, count)}`;
-    case 'added':
-      return `${indent(count)}${'+ '}${key}: ${transformValue(value, count)}`;
-    case 'unchanged':
-      return `${indent(count)}${'  '}${key}: ${transformValue(value, count)}`;
-    default:
-      throw new Error(`Unknown format: ${type}!`);
+  if (_.isObject(data)) {
+    return `{\n${transformObject(data, count + 2)}\n${indent(count + 1)}}`;
   }
-}).join('\n');
-
-export default (diffs) => {
-  const stylish = makeStylish(diffs, 1).split(',');
-  return [`{\n${stylish}\n}`]
-    .join('\n');
+  return data;
 };
+
+const typeActions = {
+  nested: (key, count, value, func) => `${indent(count)}${sings.tab}${key}: {\n${func(value, count + 1)}\n${indent(count + 1)}}`,
+  updated: (key, count, value) => {
+    const newValue = `${indent(count)}${sings.plus}${key}: ${transformValue(value.newValue, count)}`;
+    const oldValue = `${indent(count)}${sings.minus}${key}: ${transformValue(value.oldValue, count)}`;
+    return `${newValue}\n${oldValue}`;
+  },
+  deleted: (key, count, value) => `${indent(count)}${sings.minus}${key}: ${transformValue(value, count)}`,
+  added: (key, count, value) => `${indent(count)}${sings.plus}${key}: ${transformValue(value, count)}`,
+  unchanged: (key, count, value) => `${indent(count)}${sings.tab}${key}: ${transformValue(value, count)}`,
+};
+
+const makeStylish = (diffs) => {
+  const getResult = (dif, count) => dif.map((item) => {
+    const { type, key, ...actions } = item;
+    const actionKey = Object.keys(actions);
+    const action = typeActions[type];
+    return action(key, count, actions[actionKey], getResult);
+  });
+  return `{\n${getResult(diffs, 0)}\n}`.split(',').join('\n');
+};
+
+export default makeStylish;

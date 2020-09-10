@@ -2,25 +2,24 @@ import _ from 'lodash';
 import yaml from 'js-yaml';
 import ini from 'ini';
 
-const iniparser = (data) => {
+const isNumber = (data) => parseFloat(data);
+
+const makeCorrectValue = (obj) => _.mapValues(obj, (value) => {
+  if (_.isObject(value)) {
+    return makeCorrectValue(value);
+  }
+  return (isNumber(value)) ? parseFloat(value) : value;
+});
+
+const iniParse = (data) => {
   const objectFromIni = ini.parse(data);
-  const convertToNumber = (str) => {
-    if (Number(str) && !_.isBoolean(str)) {
-      return Number(str);
-    }
-    return str;
-  };
-
-  const parse = (obj) => _.mapValues(obj, (value) => (_.isObject(value)
-    ? parse(value) : convertToNumber(value)));
-
-  return parse(objectFromIni);
+  return makeCorrectValue(objectFromIni);
 };
 
 const parsers = {
-  '.yml': yaml.safeLoad,
-  '.ini': iniparser,
-  '.json': JSON.parse,
+  yml: yaml.safeLoad,
+  ini: iniParse,
+  json: JSON.parse,
 };
 
-export default (fileData, extention) => parsers[extention](fileData);
+export default (data, type) => parsers[type](data);
