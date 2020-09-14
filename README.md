@@ -52,8 +52,8 @@ If you need help, use the `help` command:
     
 Here is the exemples of usage:
 
-<a href="https://asciinema.org/a/DrkMNoBpDqT69M24ai3XmJzqA" target="_blank"><img src="https://asciinema.org/a/DrkMNoBpDqT69M24ai3XmJzqA.svg" /></a>
-    
+<a href="https://asciinema.org/a/h6pBhdrReWccoknby98F8FgY1" target="_blank"><img src="https://asciinema.org/a/h6pBhdrReWccoknby98F8FgY1.svg" /></a>
+
     - *stylish* format (default)
     $ user@name: gendiff ../diffs/deepFile1.json ../diffs/deepFile2.json
     
