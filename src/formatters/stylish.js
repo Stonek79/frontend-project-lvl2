@@ -1,49 +1,40 @@
 import _ from 'lodash';
 
-const step = '    ';
-const indent = (x) => step.repeat(x);
+const indent = (x) => '    '.repeat(x);
 
-const sings = {
-  plus: '  + ',
-  minus: '  - ',
-  tab: '    ',
-};
-
-const transformObject = (obj, count) => Object.entries(obj)
-  .map(([key, value]) => {
-    if (_.isObject(value)) {
-      return `${indent(count)}${key}: {\n${transformObject(value, count + 1)}\n${indent(count)}}`;
-    }
-    return `${indent(count)}${key}: ${value}`;
-  }).join('\n');
-
-const transformValue = (data, count) => {
-  if (_.isObject(data)) {
-    return `{\n${transformObject(data, count + 2)}\n${indent(count + 1)}}`;
+const stringifyObject = (data, count, func) => {
+  if (!_.isObject(data)) {
+    return data;
   }
-  return data;
+  const modigied = Object
+    .entries(data)
+    .map(([key, value]) => func(count + 1, key, value, '    '));
+  return ['{', ...modigied, `${indent(count + 1)}}`]
+    .join('\n');
 };
 
-const typeActions = {
-  nested: (key, count, value, func) => `${indent(count)}${sings.tab}${key}: {\n${func(value, count + 1)}\n${indent(count + 1)}}`,
-  updated: (key, count, value) => {
-    const newValue = `${indent(count)}${sings.plus}${key}: ${transformValue(value.newValue, count)}`;
-    const oldValue = `${indent(count)}${sings.minus}${key}: ${transformValue(value.oldValue, count)}`;
-    return `${newValue}\n${oldValue}`;
-  },
-  deleted: (key, count, value) => `${indent(count)}${sings.minus}${key}: ${transformValue(value, count)}`,
-  added: (key, count, value) => `${indent(count)}${sings.plus}${key}: ${transformValue(value, count)}`,
-  unchanged: (key, count, value) => `${indent(count)}${sings.tab}${key}: ${transformValue(value, count)}`,
+const stringifyValue = (depth, key, value, sign) => `${indent(depth)}${sign}${key}: ${stringifyObject(value, depth, stringifyValue)}`;
+
+const renders = {
+  nested:
+    (count, object, func) => stringifyValue(count, object.key, func(object.children, count + 1), '    '),
+  updated:
+    (count, object) => [stringifyValue(count, object.key, object.newValue, '  + '),
+      stringifyValue(count, object.key, object.oldValue, '  - ')],
+  deleted:
+    (count, object) => stringifyValue(count, object.key, object.value, '  - '),
+  added:
+    (count, object) => stringifyValue(count, object.key, object.value, '  + '),
+  unchanged:
+    (count, object) => stringifyValue(count, object.key, object.value, '    '),
 };
 
-const makeStylish = (diffs) => {
-  const getResult = (dif, count) => dif.map((item) => {
-    const { type, key, ...actions } = item;
-    const actionKey = Object.keys(actions);
-    const action = typeActions[type];
-    return action(key, count, actions[actionKey], getResult);
-  });
-  return `{\n${getResult(diffs, 0)}\n}`.split(',').join('\n');
+const makeStylish = (diffs, count) => {
+  const modified = diffs
+    .flatMap((item) => renders[item.type](count, item, makeStylish));
+  return ['{', ...modified, `${indent(count)}}`]
+    .join('\n');
 };
+const stylishing = (difference) => makeStylish(difference, 0);
 
-export default makeStylish;
+export default stylishing;

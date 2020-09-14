@@ -2,13 +2,13 @@ import _ from 'lodash';
 import yaml from 'js-yaml';
 import ini from 'ini';
 
-const isNumber = (data) => parseFloat(data);
+const isNumber = (data) => !Number.isNaN(parseFloat(data));
 
 const makeCorrectValue = (obj) => _.mapValues(obj, (value) => {
   if (_.isObject(value)) {
     return makeCorrectValue(value);
   }
-  return (isNumber(value)) ? parseFloat(value) : value;
+  return isNumber(value) ? parseFloat(value) : value;
 });
 
 const iniParse = (data) => {
