@@ -9,10 +9,10 @@ import generateDifferences from '../src/index.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const getFilePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
-const expectedResult = (fileName) => (fs.readFileSync(getFilePath(fileName), 'utf-8')).trim();
+const getExpectedResult = (fileName) => (fs.readFileSync(getFilePath(fileName), 'utf-8')).trim();
 
 describe.each(['json', 'stylish', 'plain'])('Test format -(%s)', (format) => {
-  const expected = expectedResult(`${format}Diff.txt`);
+  const expected = getExpectedResult(`${format}Diff.txt`);
 
   test.each(['.json', '.yml', '.ini'])('Test extention %s', (extention) => {
     const filePath1 = `./__fixtures__/deepFile1${extention}`;
@@ -25,7 +25,7 @@ describe('Test default format', () => {
   test.each(['.json', '.yml', '.ini'])('Test extention %s', (extention) => {
     const filePath1 = `./__fixtures__/deepFile1${extention}`;
     const filePath2 = `./__fixtures__/deepFile2${extention}`;
-    const expected = expectedResult('stylishDiff.txt');
+    const expected = getExpectedResult('stylishDiff.txt');
     expect(generateDifferences(filePath1, filePath2)).toBe(expected);
   });
 });

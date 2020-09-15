@@ -6,21 +6,23 @@ const stringifyObject = (data, count, func) => {
   if (!_.isObject(data)) {
     return data;
   }
-  const modigied = Object
+  const modified = Object
     .entries(data)
     .map(([key, value]) => func(count + 1, key, value, '    '));
-  return ['{', ...modigied, `${indent(count + 1)}}`]
+  return ['{', ...modified, `${indent(count + 1)}}`]
     .join('\n');
 };
 
 const stringifyValue = (depth, key, value, sign) => `${indent(depth)}${sign}${key}: ${stringifyObject(value, depth, stringifyValue)}`;
 
-const renders = {
+const typeActions = {
   nested:
     (count, object, func) => stringifyValue(count, object.key, func(object.children, count + 1), '    '),
   updated:
-    (count, object) => [stringifyValue(count, object.key, object.newValue, '  + '),
-      stringifyValue(count, object.key, object.oldValue, '  - ')],
+    (count, object) => [
+      stringifyValue(count, object.key, object.newValue, '  + '),
+      stringifyValue(count, object.key, object.oldValue, '  - '),
+    ],
   deleted:
     (count, object) => stringifyValue(count, object.key, object.value, '  - '),
   added:
@@ -31,10 +33,9 @@ const renders = {
 
 const makeStylish = (diffs, count) => {
   const modified = diffs
-    .flatMap((item) => renders[item.type](count, item, makeStylish));
+    .flatMap((item) => typeActions[item.type](count, item, makeStylish));
   return ['{', ...modified, `${indent(count)}}`]
     .join('\n');
 };
-const stylishing = (difference) => makeStylish(difference, 0);
 
-export default stylishing;
+export default (difference) => makeStylish(difference, 0);

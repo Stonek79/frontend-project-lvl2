@@ -1,13 +1,11 @@
 import _ from 'lodash';
-import path from 'path';
 import fs from 'fs';
 import parse from './parsers.js';
 import getFormatter from './formatters/index.js';
 import getDifferences from './getDifferences.js';
 
 const getParsedData = (filepath) => {
-  const extention = path.extname(filepath);
-  const dataType = _.trim(extention, '.');
+  const dataType = _.last(filepath.split('.'));
   const fileData = fs.readFileSync(filepath, 'utf-8');
   return parse(fileData, dataType);
 };
