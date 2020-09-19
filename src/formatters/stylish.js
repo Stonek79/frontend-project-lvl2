@@ -31,10 +31,10 @@ const typeActions = {
     (count, object) => stringifyValue(count, object.key, object.value, '    '),
 };
 
-const makeStylish = (diffs, count) => {
+const makeStylish = (diffs, depth) => {
   const modified = diffs
-    .flatMap((item) => typeActions[item.type](count, item, makeStylish));
-  return ['{', ...modified, `${indent(count)}}`]
+    .flatMap((item) => typeActions[item.type](depth, item, makeStylish));
+  return ['{', ...modified, `${indent(depth)}}`]
     .join('\n');
 };
 
